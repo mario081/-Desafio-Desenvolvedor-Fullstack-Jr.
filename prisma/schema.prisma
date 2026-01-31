@@ -12,10 +12,31 @@ datasource db {
   provider = "postgresql"
 }
 
+enum PetType {
+  CAT
+  DOG
+}
+
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  contact   String
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  contact  String
+
+  announcements Announcement[]
+}
+
+model Announcement {
+  id   String @id @default(uuid())
+  name String
+  age  String
+  type PetType
+  race String
+
+  userId  String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
