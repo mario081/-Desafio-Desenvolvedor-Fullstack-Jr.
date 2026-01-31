@@ -5,10 +5,11 @@ import { UserModule } from 'src/user/user.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { FeatureModule } from 'src/feature/feature.module';
+import { AnimalModule } from 'src/animal/animal.module';
 
 
 @Module({
-  imports: [UserModule, PrismaModule, FeatureModule, ConfigModule.forRoot({isGlobal: true})],
+  imports: [AnimalModule, UserModule, PrismaModule, FeatureModule, ConfigModule.forRoot({isGlobal: true})],
   controllers: [AppController],
   providers: [AppService],
 })
