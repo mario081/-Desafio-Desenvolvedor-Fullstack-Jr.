@@ -5,7 +5,12 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-   // Configuracao global do ValidationPipe tenho que baixa o class-validator e class-transformer
+  app.enableCors({
+    origin: ['http://localhost:5173'],
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+  // Configuracao global do ValidationPipe tenho que baixa o class-validator e class-transformer
   app.useGlobalPipes( new ValidationPipe(
     {
       whitelist: true, // nao permite propriedades extras que nao estejam no DTO
