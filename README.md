@@ -1,98 +1,109 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🐾 Pet Manager - Desafio Fullstack Jr
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+ Robusta de gerenciamento de pets desenvolvida com NestJS, focada em segurança, escalabilidade e boas práticas de arquitetura. O sistema permite o cadastro de usuários e o gerenciamento (CRUD) de anúncios de animais com controle de acesso rigoroso.
+ #
+🚀 Tecnologias e Ferramentas
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Core
+- NestJS: Framework Node.js progressivo para aplicações eficientes.
 
-## Description
+- Prisma ORM: Modelagem de dados e queries seguras com TypeScript.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- PostgreSQL: Banco de dados relacional robusto.
 
-## Project setup
+- Passport.js & JWT: Estratégia de autenticação segura via tokens.
+
+- Argon2: Algoritmo moderno e resiliente para hashing de senhas.
+#
+Arquitetura & Padronização
+
+- DTOs (Data Transfer Objects): Validação rigorosa de entrada de dados.
+
+- Custom Decorators: Decorador @CurrentUser para extração limpa de dados do usuário logado.
+
+- Guards: Proteção de rotas com JwtUserGuard.
+
+- Prisma Adapter: Utilização do @prisma/adapter-pg para máxima performance com Postgres.
+#
+✨ Funcionalidades
+
+🔐 Autenticação & Usuários
+
+- Cadastro de Usuários: Criação de conta com hash de senha via argon2.
+
+- Login: Autenticação via JWT (JSON Web Token).
+
+- Perfil: Busca de usuários por ID ou Email.
+
+- Segurança: Rotas privadas protegidas por Strategy JWT.
+
+🐶 Gerenciamento de Animais (Pets)
+
+- Anúncios: Cadastro de pets vinculados ao usuário (Relacionamento $1:N$).
+- Listagem Pública: Visualização de todos os animais com dados de contato do dono.
+- Controle de Acesso (ACL): Apenas o proprietário do anúncio tem permissão para Editar ou Excluir seu pet.
+- Validação: Verificação de existência do registro e propriedade antes de qualquer operação.
+#
+🛠️ Como Executar o Projeto
+1. Clonar e Instalar
+```bash
+git clone https://github.com/RWilker87/desafio-jr-rian.git
+cd desafio-jr-rian
+npm install
+```
+2. Variáveis de Ambiente
+Crie um arquivo .env na raiz do projeto:
 
 ```bash
-$ npm install
+DATABASE_URL="postgresql://root_user:root_password@localhost:5432/patients_db?schema=public"
+JWT_SECRET="sua_chave_secreta_aqui"
 ```
+3. Banco de Dados (Docker)
+Certifique-se de que o Docker está rodando e inicie o container:
 
-## Compile and run the project
-
+```Bash
+docker-compose up -d
+```
+4. Migrations e Prisma
+```Bash
+npx prisma migrate dev
+npx prisma generate
+```
+5. Iniciar API
+```Bash
+# Modo desenvolvimento
+npm run start:dev
+```
+#
+📡 Principais Endpoints
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+Método    Endpoint            Descrição                          Autenticação
+POST      /user               Cadastro de novo usuário               Livre
+POST      /user/signin        Login (retorna o Access Token)         Livre
+GET       /animal             Listar todos os animais registrados    Livre
+POST      /animal             Criar novo anúncio de pet               JWT
+PATCH     /animal/:id         Atualizar dados do pet (Apenas dono)    JWT
+DELETE    /animal/:id         Remover pet (Apenas dono)               JWT
 ```
+#
+🛡️ Decisões Técnicas
 
-## Run tests
+- Segurança com Argon2: Diferente do bcrypt, o Argon2 é o vencedor da Password Hashing Competition, oferecendo maior resistência a ataques de GPU.
 
-```bash
-# unit tests
-$ npm run test
+- Singleton Prisma: O PrismaService foi configurado de forma global para evitar múltiplas conexões desnecessárias com o banco de dados.
 
-# e2e tests
-$ npm run test:e2e
+- Clean Code: Uso de Param Decorators para evitar a repetição de código ao buscar o usuário dentro das requisições.
 
-# test coverage
-$ npm run test:cov
-```
+<p align="center"> Desenvolvido por <strong>Mário</strong> 🚀 </p>
 
-## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
